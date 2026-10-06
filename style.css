@@ -706,3 +706,92 @@
   .room .rm-bubble.pop { animation: rm-pop .35s cubic-bezier(.3,1.6,.5,1); }
   @keyframes rm-pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .room * { animation: none !important; } }
+
+  /* ================= 읽기 편한 페이지 ================= */
+  .page-intro { color: var(--mute); margin: -6px 0 22px; font-size: 12px; }
+  .panel p, .panel li, .panel dd { color: var(--ink); }
+  .tcard-a, .tl-text, .bubble, .mcard-b, .todo-body p, .qa-a { font-weight: 400; font-size: 16px; line-height: 1.75; }
+  .tcard-a strong, .tl-text strong, .bubble strong, .mcard-b strong, .todo-body strong, .qa-a strong { font-weight: 800; }
+
+  /* TMI 카드 */
+  .tcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .tcard { border: 1px solid var(--hair); border-radius: 14px; padding: 18px 20px; background: color-mix(in srgb, var(--bg) 70%, #fff); transition: transform .2s, border-color .2s; }
+  .tcard:hover { transform: translateY(-3px); border-color: var(--hot); }
+  .tcard-ic { font-size: 30px; line-height: 1; display: block; margin-bottom: 10px; }
+  .tcard-q { color: var(--hot); margin: 0 0 6px; font-size: 12px; }
+  .tcard-a { margin: 0; }
+
+  /* A Day 타임라인 (넓은 화면에서는 좌우 번갈아) */
+  .timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+  .timeline::before { content: ""; position: absolute; left: 50%; top: 6px; bottom: 6px; width: 2px; background: var(--hair); transform: translateX(-1px); }
+  .tl-item { position: relative; width: 50%; padding: 0 34px 22px 0; }
+  .tl-item:nth-child(even) { margin-left: 50%; padding: 0 0 22px 34px; }
+  .tl-dot { position: absolute; top: 18px; right: -8px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--rule); z-index: 1; }
+  .tl-item:nth-child(even) .tl-dot { right: auto; left: -8px; }
+  .tl-card { border: 1px solid var(--hair); border-radius: 14px; padding: 14px 18px; }
+  .tl-time { margin: 0 0 4px; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .tl-now { display: none; font-size: 11px; color: #fff; background: var(--hot); padding: 2px 8px; border-radius: 999px; }
+  .tl-text { margin: 0; }
+  .tl-item.now .tl-dot { background: var(--hot); border-color: var(--hot); box-shadow: 0 0 0 6px color-mix(in srgb, var(--hot) 25%, transparent); }
+  .tl-item.now .tl-card { border-color: var(--hot); background: color-mix(in srgb, var(--hot) 8%, var(--bg)); }
+  .tl-item.now .tl-now { display: inline-block; }
+
+  /* Quotes 채팅 */
+  .chat { display: flex; flex-direction: column; gap: 26px; }
+  .chat-pair { display: flex; flex-direction: column; gap: 8px; }
+  .msg { display: flex; flex-direction: column; max-width: 72%; }
+  .msg.me { align-self: flex-end; align-items: flex-end; }
+  .who { font-size: 11px; color: var(--mute); margin: 0 6px 4px; }
+  .bubble { margin: 0; padding: 12px 16px; border-radius: 18px; }
+  .them .bubble { background: color-mix(in srgb, var(--ink) 7%, var(--bg)); border-top-left-radius: 4px; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.4; }
+  .me .bubble { background: color-mix(in srgb, var(--hot) 13%, var(--bg)); border-top-right-radius: 4px; }
+
+  /* Manual 카드 */
+  .mcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .mcard { border: 1px solid var(--hair); border-radius: 14px; padding: 16px 18px; }
+  .mcard-h { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; }
+  .mcard-h .mono { color: var(--hot); font-size: 12px; }
+  .mcard-ic { font-size: 24px; line-height: 1; }
+  .mcard-b ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .mcard.warn { border-color: var(--hot); background: color-mix(in srgb, var(--hot) 7%, var(--bg)); }
+
+  /* Someday 체크리스트 */
+  .todos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .todo { display: flex; gap: 14px; border: 1px solid var(--hair); border-radius: 14px; padding: 16px 18px; }
+  .todo-box { font-size: 26px; line-height: 1; color: var(--mute); }
+  .todo.done .todo-box { color: var(--hot); }
+  .todo-body p { margin: 6px 0 0; }
+  .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 999px; background: var(--hair); color: var(--ink); }
+  .badge.b-wait { background: #ffe8a3; color: #6b5200; }
+  .badge.b-stuck { background: #ffd6cc; color: #8a2a12; }
+  .badge.b-done { background: #c9f0d3; color: #1d6b34; }
+  .badge.b-secret { background: #e3d9ff; color: #4b2fa3; }
+
+  /* FAQ 아코디언 */
+  .qas { display: flex; flex-direction: column; gap: 10px; }
+  .qa { border: 1px solid var(--hair); border-radius: 14px; overflow: hidden; }
+  .qa[open] { border-color: var(--rule); }
+  .qa summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 16px 18px; font-size: 17px; font-weight: 800; }
+  .qa summary::-webkit-details-marker { display: none; }
+  .qa summary:hover { background: color-mix(in srgb, var(--ink) 4%, var(--bg)); }
+  .qa-q { color: var(--hot); font-size: 14px; }
+  .qa-arrow { margin-left: auto; color: var(--mute); font-size: 20px; transition: transform .2s; }
+  .qa[open] .qa-arrow { transform: rotate(45deg); color: var(--hot); }
+  .qa-a { padding: 0 18px 18px 46px; }
+  .qa-a .ans { display: block; font-size: 20px; margin-bottom: 4px; color: var(--ink); }
+  .qa-all { font: inherit; font-size: 12px; color: var(--hot); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (max-width: 820px) {
+    .timeline::before { left: 7px; }
+    .tl-item, .tl-item:nth-child(even) { width: auto; margin-left: 0; padding: 0 0 18px 32px; }
+    .tl-dot, .tl-item:nth-child(even) .tl-dot { left: 0; right: auto; }
+    .msg { max-width: 88%; }
+    .qa-a { padding-left: 18px; }
+  }
+  .panel p.page-intro { color: var(--mute); }
+  .panel p.tcard-q { color: var(--hot); }
+  .tcards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .mcards, .todos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mcards > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+  @media (max-width: 1000px) { .tcards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 820px) { .tcards, .mcards, .todos { grid-template-columns: minmax(0, 1fr); } }

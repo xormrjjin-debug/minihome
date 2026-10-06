@@ -966,3 +966,29 @@
     clearInterval(bubbleTimer); bubbleTimer = setInterval(say, 4000);
     room.addEventListener('mouseover', e => { if (e.target.closest('.rm-pet')) say(); });
   }
+
+  // A Day: 지금 시각에 해당하는 장면 표시
+  const tlItems = document.querySelectorAll('.tl-item');
+  if (tlItems.length) {
+    const mark = () => {
+      const t = kst();
+      const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+      const list = [...tlItems].map(el => ({ el, m: toMin(el.dataset.time) }));
+      const first = list[0].m;
+      const norm = x => (x < first ? x + 1440 : x);             // 새벽 1시는 '그날 밤'으로
+      const now = norm(t.mins);
+      let cur = list[list.length - 1];
+      for (const it of list) if (norm(it.m) <= now) cur = it;
+      list.forEach(it => it.el.classList.toggle('now', it === cur));
+    };
+    mark(); setInterval(mark, 60000);
+  }
+
+  // FAQ: 모두 펼치기 / 접기
+  const qaAll = document.getElementById('qa-all');
+  if (qaAll) {
+    const qas = document.querySelectorAll('.qa');
+    const sync = () => { qaAll.textContent = [...qas].every(q => q.open) ? '모두 접기' : '모두 펼치기'; };
+    qaAll.addEventListener('click', () => { const open = ![...qas].every(q => q.open); qas.forEach(q => { q.open = open; }); sync(); });
+    qas.forEach(q => q.addEventListener('toggle', sync));
+  }
