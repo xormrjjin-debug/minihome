@@ -762,42 +762,89 @@
     });
   }
 
-  // BGM (직접 만든 8비트 곡 · 저작권 걱정 없음)
+  // BGM: "계획대로 행진곡" (ESTJ March · 직접 만든 8비트 곡 · 저작권 걱정 없음)
+  //   정박에 딱딱 떨어지는 행진곡. 4박 카운트로 정시에 시작하고, 16마디마다 정확히 반복합니다.
   const bgmBtn = document.getElementById('bgm-btn');
   if (bgmBtn) {
     const N = n => 440 * Math.pow(2, (n - 69) / 12);
     const nm = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-    const P = s => s === '-' ? null : (nm[s[0]] + (s[1] === '#' ? 1 : 0) + 12 * (+s.slice(-1) + 1));
-    // 한 칸 = 8분음표, 한 마디 = 8칸
-    const mel = ('E5 - G5 - C6 - B5 A5 | G5 - E5 - C5 - D5 E5 | F5 - A5 - G5 - E5 C5 | D5 - - - - - - - | ' +
-                 'E5 - G5 - C6 - B5 A5 | G5 - E5 - C5 - A4 B4 | C5 - E5 - D5 - B4 G4 | C5 - - - - - - -').split(' ').filter(x => x !== '|');
-    const bass = ['C3', 'A2', 'F2', 'G2', 'C3', 'A2', 'F2', 'G2'];
-    let ctx, master, timer, step = 0, next = 0, on = false;
-    const BEAT = 60 / 140 / 2;
-    const tone = (freq, t, len, type, vol) => {
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = type; o.frequency.value = freq;
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.01);
+    const P = s => nm[s[0]] + (s[1] === '#' ? 1 : 0) + 12 * (+s.slice(-1) + 1);
+    // [음, 16분음표 길이] · R = 쉼표
+    const A = [
+      ['G4',4],['B4',2],['D5',2],['G5',4],['D5',4],      ['E5',3],['D5',1],['C5',4],['B4',4],['A4',4],
+      ['B4',4],['D5',2],['G5',2],['B5',4],['A5',4],      ['G5',8],['R',4],['D5',4],
+      ['E5',4],['G5',2],['E5',2],['D5',4],['B4',4],      ['C5',3],['B4',1],['A4',4],['G4',4],['A4',4],
+      ['B4',2],['D5',2],['G5',4],['F#5',2],['A5',2],['D5',4], ['G5',8],['G4',4],['R',4],
+    ];
+    const B = [   // 2절: 한 단계 더 각 잡힌 버전
+      ['D5',2],['D5',2],['G5',4],['G5',2],['A5',2],['B5',4], ['C6',3],['B5',1],['A5',4],['G5',4],['F#5',4],
+      ['E5',2],['E5',2],['A5',4],['A5',2],['B5',2],['C6',4], ['B5',8],['R',4],['D5',4],
+      ['G5',4],['B5',2],['G5',2],['E5',4],['C5',4],      ['D5',3],['E5',1],['F#5',4],['A5',4],['F#5',4],
+      ['G5',4],['D5',2],['B4',2],['G4',4],['A4',2],['F#4',2], ['G4',8],['R',8],
+    ];
+    const melody = A.concat(B);
+    // 반 마디(8칸)마다 베이스 근음
+    const roots = ['G2','G2','C3','D3','G2','G2','D3','D3','C3','G2','A2','D3','G2','D3','G2','G2',
+                   'G2','G2','A2','D3','A2','A2','G2','D3','E3','C3','D3','D3','G2','D3','G2','G2'];
+    const STEP = 60 / 120 / 4;            // 120BPM, 16분음표
+    const BAR = 16, LOOP = 32 * 8;        // 32개 반 마디 = 16마디
+    let ctx, master, noise, timer, on = false, next = 0, pos = 0, ev = [], ei = 0, countIn = 0;
+    // 멜로디를 칸 단위 이벤트로 펼치기
+    let at = 0; melody.forEach(([n, len]) => { if (n !== 'R') ev.push({ at, n: P(n), len }); at += len; });
+
+    const env = (node, t, vol, len) => {
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.005);
       g.gain.exponentialRampToValueAtTime(0.0001, t + len);
-      o.connect(g); g.connect(master); o.start(t); o.stop(t + len + 0.02);
+      node.connect(g); g.connect(master); return g;
     };
-    const tick = () => {
-      while (next < ctx.currentTime + 0.15) {
-        const i = step % mel.length, n = P(mel[i]);
-        if (n !== null) {
-          let len = 1; while (mel[(i + len) % mel.length] === '-' && len < 8) len++;
-          tone(N(n), next, BEAT * len * 0.9, 'square', 0.10);
+    const tone = (f, t, len, type, vol) => {
+      const o = ctx.createOscillator(); o.type = type; o.frequency.value = f;
+      env(o, t, vol, len); o.start(t); o.stop(t + len + 0.02);
+    };
+    const kick = t => {
+      const o = ctx.createOscillator(); o.type = 'sine';
+      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+      env(o, t, 0.5, 0.16); o.start(t); o.stop(t + 0.2);
+    };
+    const snare = (t, vol = 0.16) => {
+      const s = ctx.createBufferSource(); s.buffer = noise;
+      const f = ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 1800;
+      s.connect(f); env(f, t, vol, 0.11); s.start(t); s.stop(t + 0.13);
+    };
+    const tick = (t, hi) => tone(hi ? 1760 : 1320, t, 0.05, 'square', 0.07);
+
+    const schedule = () => {
+      while (next < ctx.currentTime + 0.2) {
+        if (countIn < 4) {                                   // 원, 투, 쓰리, 포
+          tick(next, countIn === 0); countIn++; next += STEP * 4; continue;
         }
-        if (i % 2 === 0) tone(N(P(bass[Math.floor(i / 8) % bass.length])), next, BEAT * 1.6, 'triangle', 0.22);
-        if (i % 4 === 2) tone(2400, next, 0.03, 'square', 0.02);
-        next += BEAT; step++;
+        const s = pos % LOOP;
+        if (s === 0) ei = 0;
+        while (ei < ev.length && ev[ei].at === s) {
+          const e = ev[ei]; tone(N(e.n), next, STEP * e.len * 0.85, 'square', 0.085); ei++;
+        }
+        const beat = s % BAR;
+        if (beat % 4 === 0) {                                // 정박: 쿵 / 짝
+          const r = P(roots[Math.floor(s / 8) % roots.length]);
+          if (beat % 8 === 0) { kick(next); tone(N(r), next, STEP * 3, 'triangle', 0.28); }
+          else { snare(next); tone(N(r + 7), next, STEP * 2, 'triangle', 0.18); }
+        }
+        if (beat === 14 && Math.floor(s / BAR) % 4 === 3) snare(next, 0.1);   // 4마디마다 작은 필인
+        if (beat % 2 === 0) tone(6000, next, 0.02, 'square', 0.012);         // 하이햇
+        next += STEP; pos++;
       }
     };
     const box = document.getElementById('bgm');
     bgmBtn.addEventListener('click', () => {
-      if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = 0.35; master.connect(ctx.destination); }
+      if (!ctx) {
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        master = ctx.createGain(); master.gain.value = 0.35; master.connect(ctx.destination);
+        noise = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
+        const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      }
       on = !on;
-      if (on) { ctx.resume(); next = ctx.currentTime + 0.05; timer = setInterval(tick, 40); }
+      if (on) { ctx.resume(); pos = 0; ei = 0; countIn = 0; next = ctx.currentTime + 0.05; timer = setInterval(schedule, 40); }
       else { clearInterval(timer); ctx.suspend(); }
       bgmBtn.textContent = on ? '❚❚' : '▶';
       bgmBtn.setAttribute('aria-label', on ? 'BGM 정지' : 'BGM 재생');
@@ -808,54 +855,114 @@
   // 미니룸 (벌꿀오소리 진화 단계 · 광주 시각에 따라 바뀜)
   const room = document.getElementById('room');
   if (room) {
+    const talk = [
+      ['밥은요?', '꿀 한 방울만요', '…졸려요', '안녕하세요!', '쑥쑥 크는 중'],
+      ['밥 주세요', '꿀은 언제나 환영', '대체로 괜찮습니다', '알람 다섯 개 맞췄습니다', '오늘 할 일 체크 완료'],
+      ['건드리지 마십시오', '배고프면 사나워집니다', '크아앙', '밥 70번 받았습니다', '꿀 내놔'],
+      ['짐이 메가 벌꿀오소리다', '대체로 전설입니다', '왕관이 무겁습니다', '200번의 밥, 기억하겠습니다', '커피도 바칩시다'],
+    ];
+    const lights = ['#ff8fab', '#ffd166', '#8ecae6', '#b8e986', '#cdb4ff', '#ff8fab', '#ffd166', '#8ecae6', '#b8e986', '#cdb4ff', '#ff8fab'];
+    let stage = 0, bubbleTimer;
     const draw = n => {
-      const fi = HB(n), t = kst(), night = t.h >= 22 || t.h < 7;
+      const fi = HB(n); stage = fi;
+      const t = kst(), night = t.h >= 22 || t.h < 7;
       const hr = (t.h % 12) * 30 + t.m * 0.5, mn = t.m * 6;
-      const pet = BADGER_ART[fi].replace('<svg viewBox="0 0 200 200">', '<svg x="215" y="118" width="170" height="170" viewBox="0 0 200 200">');
+      const cx = 430, cy = 66;
+      const hx = cx + 11 * Math.sin(hr * Math.PI / 180), hy = cy - 11 * Math.cos(hr * Math.PI / 180);
+      const mx = cx + 17 * Math.sin(mn * Math.PI / 180), my = cy - 17 * Math.cos(mn * Math.PI / 180);
+      const pet = BADGER_ART[fi].replace('<svg viewBox="0 0 200 200">', '<svg x="222" y="128" width="156" height="156" viewBox="0 0 200 200">');
       const deco = [
-        '<g><circle cx="520" cy="250" r="9" fill="#ff9aa8"/><rect x="517" y="226" width="6" height="18" rx="3" fill="#f2b134"/><circle cx="520" cy="224" r="8" fill="#f2b134"/></g>',
-        '<g><path d="M500 266 Q500 236 520 236 Q540 236 540 266Z" fill="#c97f12"/><rect x="503" y="230" width="34" height="8" rx="3" fill="#f2b134"/></g>',
-        '<g stroke="#8d7a66" stroke-width="3" stroke-linecap="round"><path d="M455 40 l20 40 M465 38 l20 40 M475 36 l20 40"/></g>',
-        '<g><path d="M462 30 L470 8 L482 22 L492 2 L502 22 L514 8 L522 30Z" fill="#f5c542" stroke="#8a5a10" stroke-width="2"/></g>',
+        // 아기: 모빌 + 딸랑이
+        `<g class="rm-swing"><path d="M300 0 V22" stroke="#c9a67a" stroke-width="2"/><path d="M270 22 H330" stroke="#c9a67a" stroke-width="3" stroke-linecap="round"/>
+          <path d="M270 22 V34 M300 22 V40 M330 22 V34" stroke="#c9a67a" stroke-width="1.5"/>
+          <text x="270" y="46" font-size="14" text-anchor="middle">⭐</text><text x="300" y="52" font-size="14" text-anchor="middle">🌙</text><text x="330" y="46" font-size="14" text-anchor="middle">⭐</text></g>
+         <g><circle cx="520" cy="270" r="9" fill="#ffb3c1"/><rect x="517" y="246" width="6" height="18" rx="3" fill="#ffd166"/><circle cx="520" cy="244" r="8" fill="#ffd166"/></g>`,
+        // 벌꿀오소리: 꿀단지
+        `<g><path d="M500 282 Q500 252 522 252 Q544 252 544 282Z" fill="#e8a33c"/><rect x="503" y="246" width="38" height="9" rx="4" fill="#ffd166"/>
+          <path d="M508 255 q4 10 8 0 q4 12 8 0" fill="#ffd166"/><text x="522" y="275" text-anchor="middle" font-size="8" font-weight="800" fill="#fff4d0">HONEY</text></g>`,
+        // 사나운: 발톱 자국 + 주의 테이프
+        `<g stroke="#c07a6a" stroke-width="3" stroke-linecap="round"><path d="M470 26 l16 34 M480 24 l16 34 M490 22 l16 34"/></g>
+         <g transform="rotate(-6 520 150)"><rect x="470" y="140" width="110" height="16" fill="#ffd166"/><text x="525" y="152" text-anchor="middle" font-size="9" font-weight="800" fill="#24211f">⚠ 출입 주의 ⚠</text></g>`,
+        // 메가: 왕관 액자 + 트로피
+        `<g><rect x="470" y="22" width="56" height="44" rx="6" fill="#fff8e1" stroke="#e8b923" stroke-width="4"/>
+          <path d="M482 56 L486 34 L494 46 L498 30 L502 46 L510 34 L514 56Z" fill="#f5c542" stroke="#8a5a10" stroke-width="1.5"/></g>
+         <text x="520" y="282" font-size="26" text-anchor="middle">🏆</text>`,
       ][fi];
+      const bulbs = lights.map((c, i) => {
+        const x = 18 + i * 56, y = 16 + 10 * Math.sin(i * 1.05) ** 2;
+        return `<g class="rm-bulb" style="animation-delay:${(i % 4) * .35}s"><circle cx="${x}" cy="${y + 8}" r="5.5" fill="${c}"/><rect x="${x - 2.5}" y="${y}" width="5" height="4" rx="1" fill="#8d7a66"/></g>`;
+      }).join('');
       room.innerHTML = `<svg viewBox="0 0 600 300" role="img" aria-label="미니룸: ${HB_NAMES[fi]}가 사는 방">
-        <rect width="600" height="200" fill="${fi === 3 ? '#f7ecd2' : '#f6efe3'}"/>
-        <rect y="186" width="600" height="14" fill="#e6d6bf"/>
-        <rect y="200" width="600" height="100" fill="#d9b98f"/>
-        <g stroke="#c9a67a" stroke-width="2"><path d="M0 230 H600 M0 262 H600 M120 200 V230 M330 200 V230 M520 200 V230 M60 230 V262 M260 230 V262 M450 230 V262 M170 262 V300 M390 262 V300"/></g>
-        <ellipse cx="300" cy="268" rx="${fi === 3 ? 130 : 110}" ry="22" fill="${fi === 3 ? '#e8b923' : '#ff4a1c'}" opacity="${fi === 3 ? .7 : .55}"/>
-        <rect x="36" y="30" width="120" height="92" rx="4" fill="${night ? '#1d2440' : '#bfe3ff'}" stroke="#fff" stroke-width="6"/>
-        <path d="M96 30 V122 M36 76 H156" stroke="#fff" stroke-width="5"/>
-        ${night ? '<circle cx="126" cy="52" r="10" fill="#fff6c8"/><circle cx="60" cy="98" r="2" fill="#fff"/><circle cx="80" cy="50" r="1.5" fill="#fff"/>' : '<circle cx="128" cy="50" r="12" fill="#ffd54a"/><ellipse cx="66" cy="100" rx="18" ry="7" fill="#fff"/>'}
-        <rect x="196" y="36" width="78" height="100" fill="#ff4a1c"/>
-        <text x="235" y="76" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">대체로</text>
-        <text x="235" y="96" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">괜찮음*</text>
-        <text x="235" y="122" text-anchor="middle" font-size="9" fill="#ffe0d6">* 개인차 있음</text>
-        <rect x="300" y="40" width="70" height="88" fill="#fff" stroke="#ccc"/>
-        <rect x="300" y="40" width="70" height="16" fill="#24211f"/>
-        <text x="335" y="52" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">TO DO</text>
-        <g font-size="10" fill="#24211f"><text x="308" y="72">☑ 커피</text><text x="308" y="90">☑ 알람 ×5</text><text x="308" y="108">☐ 테니스</text><text x="308" y="124" fill="#999">☐ 놀고먹기</text></g>
-        <circle cx="415" cy="72" r="26" fill="#fff" stroke="#24211f" stroke-width="4"/>
-        <path d="M415 72 L${415 + 13 * Math.sin(hr * Math.PI / 180)} ${72 - 13 * Math.cos(hr * Math.PI / 180)}" stroke="#24211f" stroke-width="4" stroke-linecap="round"/>
-        <path d="M415 72 L${415 + 20 * Math.sin(mn * Math.PI / 180)} ${72 - 20 * Math.cos(mn * Math.PI / 180)}" stroke="#ff4a1c" stroke-width="2.5" stroke-linecap="round"/>
+        <defs>
+          <pattern id="rm-dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.2" fill="#fff" opacity=".7"/><circle cx="20" cy="20" r="2.2" fill="#fff" opacity=".7"/></pattern>
+          <pattern id="rm-rug" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="${fi === 3 ? '#f5c542' : '#ffd166'}"/><rect width="8" height="16" fill="${fi === 3 ? '#e8b923' : '#ffc94d'}"/></pattern>
+        </defs>
+        <rect width="600" height="204" fill="${fi === 3 ? '#fff1d6' : '#ffe8e3'}"/>
+        <rect width="600" height="204" fill="url(#rm-dots)"/>
+        <rect y="196" width="600" height="10" fill="#fff" opacity=".8"/>
+        <rect y="204" width="600" height="96" fill="#f3d2a8"/>
+        <g stroke="#e8bf8c" stroke-width="2" opacity=".8"><path d="M0 236 H600 M0 268 H600 M140 204 V236 M360 204 V236 M80 236 V268 M300 236 V268 M500 236 V268 M200 268 V300 M420 268 V300"/></g>
+        <path d="M6 12 Q300 46 594 12" stroke="#8d7a66" stroke-width="1.5" fill="none"/>
+        ${bulbs}
+        <rect x="40" y="44" width="116" height="92" rx="14" fill="${night ? '#2b3266' : '#bfe6ff'}" stroke="#fff" stroke-width="7"/>
+        ${night ? '<circle cx="128" cy="68" r="11" fill="#fff6c8"/><circle cx="124" cy="64" r="11" fill="#2b3266"/><text x="62" y="78" font-size="10">✨</text><text x="92" y="118" font-size="9">✨</text>'
+                : '<circle cx="128" cy="66" r="12" fill="#ffd54a"/><g fill="#fff"><ellipse cx="72" cy="106" rx="20" ry="8"/><ellipse cx="86" cy="100" rx="12" ry="8"/></g>'}
+        <path d="M98 44 V136 M40 90 H156" stroke="#fff" stroke-width="5"/>
+        <path d="M30 40 Q44 90 36 144 L62 144 Q56 92 70 40Z" fill="#ffb3c1"/><path d="M166 40 Q152 90 160 144 L134 144 Q140 92 126 40Z" fill="#ffb3c1"/>
+        <rect x="26" y="34" width="144" height="8" rx="4" fill="#e88aa0"/>
+        <g transform="rotate(-4 236 86)"><rect x="200" y="44" width="72" height="86" rx="6" fill="#ff6b4a"/>
+          <text x="236" y="80" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">대체로</text>
+          <text x="236" y="98" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">괜찮음*</text>
+          <text x="236" y="118" text-anchor="middle" font-size="8" fill="#ffe0d6">* 개인차 있음</text>
+          <circle cx="236" cy="48" r="4" fill="#ffd166"/></g>
+        <g transform="rotate(3 334 84)"><rect x="300" y="46" width="68" height="76" rx="3" fill="#fff59d"/>
+          <text x="334" y="62" text-anchor="middle" font-size="9" font-weight="800" fill="#8a6d00">TO DO ✔</text>
+          <g font-size="9" fill="#5a4a00"><text x="307" y="78">☑ 커피</text><text x="307" y="92">☑ 알람 ×5</text><text x="307" y="106">☐ 테니스</text><text x="307" y="118" opacity=".55">☐ 놀고먹기</text></g>
+          <circle cx="334" cy="49" r="3.5" fill="#ff6b4a"/></g>
+        <circle cx="${cx}" cy="${cy}" r="24" fill="#fff" stroke="#ffb3c1" stroke-width="5"/>
+        <circle cx="${cx - 8}" cy="${cy - 5}" r="1.6" fill="#24211f"/><circle cx="${cx + 8}" cy="${cy - 5}" r="1.6" fill="#24211f"/>
+        <ellipse cx="${cx - 12}" cy="${cy + 6}" rx="3.5" ry="2" fill="#ffb3c1"/><ellipse cx="${cx + 12}" cy="${cy + 6}" rx="3.5" ry="2" fill="#ffb3c1"/>
+        <path d="M${cx} ${cy} L${hx} ${hy}" stroke="#24211f" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M${cx} ${cy} L${mx} ${my}" stroke="#ff4a1c" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="${cx}" cy="${cy}" r="2.5" fill="#24211f"/>
         ${deco}
-        <rect x="20" y="196" width="160" height="64" rx="8" fill="#8d6748"/>
-        <rect x="24" y="186" width="152" height="40" rx="10" fill="#fff"/>
-        <rect x="24" y="204" width="152" height="40" rx="8" fill="${night ? '#4b5bd6' : '#ff8a6b'}"/>
-        <ellipse cx="54" cy="194" rx="24" ry="10" fill="#f6efe3"/>
-        <rect x="430" y="196" width="150" height="10" rx="3" fill="#8d6748"/>
-        <rect x="440" y="206" width="8" height="58" fill="#8d6748"/><rect x="562" y="206" width="8" height="58" fill="#8d6748"/>
-        <path d="M456 196 L466 170 L520 170 L512 196Z" fill="#3a3532"/><rect x="458" y="192" width="64" height="5" fill="#555"/>
-        <path d="M540 172 L560 172 L557 196 L543 196Z" fill="#fff" stroke="#24211f" stroke-width="2"/>
-        <path d="M560 178 q8 0 7 8 q-1 6 -8 6" fill="none" stroke="#24211f" stroke-width="2"/>
-        <path d="M546 166 q-3 -5 0 -10 M553 166 q-3 -5 0 -10" stroke="#aaa" stroke-width="2" fill="none"/>
+        <g><rect x="18" y="214" width="170" height="54" rx="14" fill="#b98b6a"/>
+          <rect x="22" y="200" width="162" height="44" rx="16" fill="#fff"/>
+          <rect x="22" y="218" width="162" height="40" rx="14" fill="${night ? '#9fa8ff' : '#a8e6cf'}"/>
+          <g fill="#fff" opacity=".8"><text x="60" y="244" font-size="12">♥</text><text x="104" y="250" font-size="12">♥</text><text x="148" y="242" font-size="12">♥</text></g>
+          <ellipse cx="56" cy="206" rx="26" ry="11" fill="#ffe0e8"/><text x="56" y="211" text-anchor="middle" font-size="11" fill="#ff8fab">♥</text></g>
+        <ellipse cx="300" cy="272" rx="${fi === 3 ? 128 : 112}" ry="22" fill="url(#rm-rug)" stroke="#fff" stroke-width="4"/>
+        <g><rect x="434" y="208" width="146" height="10" rx="5" fill="#c49470"/>
+          <rect x="444" y="218" width="8" height="60" rx="3" fill="#c49470"/><rect x="562" y="218" width="8" height="60" rx="3" fill="#c49470"/>
+          <path d="M454 208 L462 184 L512 184 L506 208Z" fill="#cdb4ff"/><rect x="452" y="205" width="62" height="5" rx="2" fill="#b39ddb"/>
+          <circle cx="484" cy="196" r="3" fill="#fff"/>
+          <path d="M534 186 L556 186 L553 208 L537 208Z" fill="#fff" stroke="#ff8fab" stroke-width="2.5"/>
+          <path d="M556 191 q8 0 7 7 q-1 6 -8 6" fill="none" stroke="#ff8fab" stroke-width="2.5"/>
+          <g class="rm-steam"><path d="M540 178 q-3 -5 0 -10" stroke="#c9b8b0" stroke-width="2" fill="none"/><text x="547" y="172" font-size="9" fill="#ff8fab">♥</text></g>
+          <path d="M572 208 q-4 -16 8 -22 q-2 12 -8 22Z" fill="#7bc47f"/><rect x="566" y="200" width="14" height="10" rx="2" fill="#e88a60"/></g>
         <a href="play.html#badger"><g class="rm-pet">${pet}</g></a>
-        ${night ? '<text x="372" y="140" font-size="22" font-weight="800" fill="#4b5bd6">z Z</text><rect width="600" height="300" fill="#0b1030" opacity=".28" pointer-events="none"/>' : ''}
+        <g class="rm-hearts"><text x="372" y="190" font-size="13" fill="#ff8fab">♥</text><text x="226" y="200" font-size="10" fill="#ff8fab" style="animation-delay:1.2s">♥</text></g>
+        <g id="rm-bubble" class="rm-bubble">
+          <rect x="352" y="114" width="150" height="30" rx="15" fill="#fff" stroke="#24211f" stroke-width="2"/>
+          <path d="M366 142 L360 154 L378 143Z" fill="#fff" stroke="#24211f" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M365 141 L377 141" stroke="#fff" stroke-width="3"/>
+          <text id="rm-say" x="427" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#24211f"></text>
+        </g>
+        ${night ? '<rect width="600" height="300" fill="#141a4a" opacity=".3" pointer-events="none"/><text x="368" y="176" font-size="20" font-weight="800" fill="#cdb4ff">z Z</text>' : ''}
       </svg>`;
       document.getElementById('room-cap').textContent =
         `현재 거주자: ${HB_NAMES[fi]} · 밥 ${n.toLocaleString()}번${night ? ' · 지금은 자는 시간입니다' : ''}`;
+      say();
+    };
+    const say = () => {
+      const el = document.getElementById('rm-say'); if (!el) return;
+      const t = kst(), night = t.h >= 22 || t.h < 7;
+      el.textContent = night ? pick(['쿨…쿨…', '5분만…', '알람 다섯 개…', '…먹던 거로…']) : pick(talk[stage]);
+      const b = document.getElementById('rm-bubble'); b.classList.remove('pop'); void b.getBBox(); b.classList.add('pop');
     };
     draw(0);
     fetch('https://abacus.jasoncameron.dev/get/xormrjjin-debug-jinseo-v2/honeybadger')
       .then(r => r.ok ? r.json() : { value: 0 }).then(d => draw(d.value || 0)).catch(() => {});
+    clearInterval(bubbleTimer); bubbleTimer = setInterval(say, 4000);
+    room.addEventListener('mouseover', e => { if (e.target.closest('.rm-pet')) say(); });
   }

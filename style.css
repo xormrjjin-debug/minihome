@@ -688,3 +688,21 @@
     .two .pc-mood { margin-top: 14px; }
     .two .bgm { margin-top: 14px; }
   }
+
+  /* 미니룸 귀여움 */
+  .room .rm-bulb { animation: rm-blink 1.4s ease-in-out infinite; }
+  @keyframes rm-blink { 50% { opacity: .35; } }
+  .room .rm-swing { transform-origin: 300px 0; animation: rm-swing 3s ease-in-out infinite; }
+  @keyframes rm-swing { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .room .rm-steam { animation: rm-up 2.2s ease-in-out infinite; }
+  .room .rm-hearts text { animation: rm-heart 3s ease-in infinite; }
+  @keyframes rm-up { 0% { opacity: 0; transform: translateY(4px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(-8px); } }
+  @keyframes rm-heart { 0% { opacity: 0; transform: translateY(6px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px); } }
+  .room .rm-pet { animation: rm-bob 2.6s ease-in-out infinite; }
+  @keyframes rm-bob { 50% { transform: translateY(-3px); } }
+  .room .rm-pet:hover { animation: rm-hop .5s ease; }
+  @keyframes rm-hop { 40% { transform: translateY(-14px); } }
+  .room .rm-bubble { transform-origin: 365px 150px; }
+  .room .rm-bubble.pop { animation: rm-pop .35s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes rm-pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .room * { animation: none !important; } }
