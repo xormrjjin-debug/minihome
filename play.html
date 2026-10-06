@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play — 김진서</title>
+<meta name="description" content="대체로 괜찮은 사람입니다. 김진서의 미니홈피.">
+<meta name="theme-color" content="#f2f1ee">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="김진서 미니홈피">
+<meta property="og:title" content="김진서 · 대체로 괜찮은 사람입니다.">
+<meta property="og:description" content="* 개인차 있음. 자세한 건 들어와서 보시면 됩니다.">
+<meta property="og:image" content="https://xormrjjin-debug.github.io/minihome/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://xormrjjin-debug.github.io/minihome/play.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="style.css?v=21">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="bar mono">
+    <a class="home" href="index.html"><span class="dot"></span>Jinseo Kim</a>
+    <nav>
+      <a href="tmi.html">TMI</a>
+      <a href="day.html">A Day</a>
+      <a href="quotes.html">Quotes</a>
+      <a href="manual.html">Manual</a>
+      <a href="someday.html">Someday</a>
+      <a href="faq.html">FAQ</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="play.html" class="on">Play</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScuwm5VR3iKkkGPxskPZ88LTEF3181ZZtfGfy6gkGc3ohsI6Q/viewform" target="_blank" rel="noopener">Ask ↗</a>
+    </nav>
+    <span>GWANGJU <span id="clock">--:--</span></span>
+  </div>
+
+  <main class="dash two solo">
+
+  <section class="card chapters">
+    <div class="panel">
+      <h2 class="panel-title">눌러 보셔도 <i>됩니다.</i></h2>
+
+      <div class="play">
+
+        <!-- 1. 지금 진서는? -->
+        <article class="pbox pbox-wide" id="now">
+          <p class="pbox-head mono"><span>01 · 지금 진서는?</span><span>GWANGJU <span id="now-time">--:--</span></span></p>
+          <p class="now-text">진서는 아마 <strong id="now-text">…</strong></p>
+          <p class="pbox-note mono">* A Day 기준 추정입니다. 대체로 맞습니다.</p>
+        </article>
+
+        <!-- 2. 다 같이 키우는 벌꿀오소리 -->
+        <article class="pbox" id="badger">
+          <p class="pbox-head mono"><span>02 · 다 같이 키우는 벌꿀오소리</span><span id="bd-form-name">-</span></p>
+          <div class="bd-stage" id="bd-stage" data-form="0">
+            <span class="bd-aura"></span>
+            <span class="bd-rays"></span>
+            <span class="bd-acc bd-acc-a" id="bd-acc-a"></span>
+            <span class="bd-acc bd-acc-b" id="bd-acc-b"></span>
+            <span class="bd-pet" id="bd-pet" aria-hidden="true"></span>
+            <span class="bd-spark s1">✨</span><span class="bd-spark s2">✨</span><span class="bd-spark s3">✨</span>
+          </div>
+          <p class="bd-stat">밥 <strong id="bd-count">-</strong>번 · Lv. <strong id="bd-lv">-</strong> · 상태: <strong id="bd-mood">-</strong></p>
+          <div class="bd-next"><span id="bd-next-fill"></span></div>
+          <p class="bd-next-txt mono" id="bd-next-txt">-</p>
+          <p class="pbox-msg" id="bd-msg">모두가 같이 키웁니다. 밥 25번이면 진화합니다.</p>
+          <div class="bd-btns">
+            <button type="button" class="rand-btn mono" id="bd-btn">밥 주기 🍯</button>
+            <button type="button" class="bd-reset mono" id="bd-reset">밥 초기화</button>
+          </div>
+        </article>
+
+        <!-- 5. 카페인 충전 게이지 -->
+        <article class="pbox" id="coffee">
+          <p class="pbox-head mono"><span>03 · 진서 카페인 충전</span><span>오늘 <span id="cf-cups">0</span>잔</span></p>
+          <div class="pl-gate" id="cf-gate">
+            <input type="text" maxlength="10" placeholder="닉네임 (랭킹에 올라갑니다)" autocomplete="off">
+            <button type="button" class="rand-btn mono">시작 →</button>
+          </div>
+          <p class="pl-who mono" id="cf-who" hidden>플레이어 · <b></b> · 내 기록 <b class="pl-mine">0</b>번 <button type="button" class="pl-change">닉네임 변경</button></p>
+          <div class="cf-top">
+            <svg class="cf-cup" id="cf-cup" viewBox="0 0 130 130" aria-hidden="true">
+              <defs><clipPath id="cf-clip"><path d="M22 34 L100 34 L92 110 Q90 116 84 116 L38 116 Q32 116 30 110Z"/></clipPath></defs>
+              <g class="cf-steam"><path d="M46 26 q-6 -8 0 -16 q6 -8 0 -16"/><path d="M62 26 q-6 -8 0 -16 q6 -8 0 -16"/><path d="M78 26 q-6 -8 0 -16 q6 -8 0 -16"/></g>
+              <g clip-path="url(#cf-clip)">
+                <rect id="cf-liquid" x="0" y="116" width="130" height="0" fill="#6b3e1f"/>
+                <rect id="cf-crema" x="0" y="116" width="130" height="5" fill="#c08a52"/>
+              </g>
+              <path class="cf-over" d="M24 36 q-4 14 2 22 q6 -8 2 -22Z M96 36 q6 18 -2 30 q-6 -10 2 -30Z" fill="#6b3e1f"/>
+              <path d="M22 34 L100 34 L92 110 Q90 116 84 116 L38 116 Q32 116 30 110Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+              <path d="M98 50 Q118 50 116 70 Q114 88 94 88" fill="none" stroke="currentColor" stroke-width="3.5"/>
+            </svg>
+            <div>
+              <p class="cf-pct"><span id="cf-pct">0</span>%</p>
+              <p class="cf-state" id="cf-state">😴 아직 부팅 중입니다. 말 걸지 마십시오.</p>
+            </div>
+          </div>
+          <div class="cf-menu">
+            <button type="button" data-drink="americano">아메리카노<small>+5%</small></button>
+            <button type="button" data-drink="shot">샷 추가<small>+10%</small></button>
+            <button type="button" data-drink="latte">바닐라라떼<small>+4%</small></button>
+            <button type="button" data-drink="decaf">디카페인<small>+0%</small></button>
+          </div>
+          <p class="pbox-msg" id="cf-msg">모두가 같이 채웁니다. 매일 밤 0%로 비워집니다.</p>
+          <div class="rank">
+            <p class="rank-head mono"><span>🏆 많이 누른 순</span><span class="rank-me" id="cf-me"></span></p>
+            <ol class="rank-list" id="cf-rank"><li class="rank-empty">불러오는 중입니다.</li></ol>
+          </div>
+        </article>
+
+        <!-- 4. 진서 깨우기 -->
+        <article class="pbox" id="wake">
+          <p class="pbox-head mono"><span>04 · 진서 깨우기</span><span id="wk-best">최고 기록 -</span></p>
+          <div class="pl-gate" id="wk-gate">
+            <input type="text" maxlength="10" placeholder="닉네임 (랭킹에 올라갑니다)" autocomplete="off">
+            <button type="button" class="rand-btn mono">시작 →</button>
+          </div>
+          <p class="pl-who mono" id="wk-who" hidden>플레이어 · <b></b> · 내 기록 <b class="pl-mine">0</b>번 <button type="button" class="pl-change">닉네임 변경</button></p>
+          <div class="wk-stage" id="wk-stage" data-state="sleep">
+            <span class="wk-face" id="wk-face">😴</span>
+            <span class="wk-z z1">z</span><span class="wk-z z2">z</span><span class="wk-z z3">Z</span>
+          </div>
+          <div class="wk-meter"><span id="wk-fill"></span></div>
+          <p class="wk-depth mono">잠 깊이 <span id="wk-depth">100</span>% · 시도 <span id="wk-tries">0</span>번</p>
+          <p class="wk-text" id="wk-text">진서가 자고 있습니다. 많이 자면 12시간도 잡니다. 깨워 보세요.</p>
+          <div class="wk-acts" id="wk-acts">
+            <button type="button" data-act="alarm">⏰ 알람</button>
+            <button type="button" data-act="call">📱 전화</button>
+            <button type="button" data-act="coffee">☕ 커피 냄새</button>
+            <button type="button" data-act="food">🍚 밥 먹자</button>
+            <button type="button" data-act="shake">🫳 흔들기</button>
+          </div>
+          <button type="button" class="rand-btn mono" id="wk-reset" hidden>다시 재우기 💤</button>
+          <div class="rank">
+            <p class="rank-head mono"><span>🏆 많이 누른 순</span><span class="rank-me" id="wk-me"></span></p>
+            <ol class="rank-list" id="wk-rank"><li class="rank-empty">불러오는 중입니다.</li></ol>
+          </div>
+        </article>
+
+        <!-- 3. 진서 말투 번역기 -->
+        <article class="pbox" id="talk">
+          <p class="pbox-head mono"><span>05 · 진서 말투 번역기</span><span>KR → 진서</span></p>
+          <div class="tr-modes" role="radiogroup">
+            <button type="button" data-mode="basic" aria-pressed="true">기본</button>
+            <button type="button" data-mode="flat" aria-pressed="false">더 무심하게</button>
+          </div>
+          <form id="tr-form" class="tr-form">
+            <input id="tr-in" type="text" maxlength="80" placeholder="아무 말이나 써 보세요" autocomplete="off">
+            <button type="submit" class="rand-btn mono">번역 →</button>
+          </form>
+          <div class="tr-examples">
+            <button type="button">배고파 ㅠㅠ</button><button type="button">과제 하기 싫어</button><button type="button">오늘 뭐해?</button>
+            <button type="button">보고 싶어</button><button type="button">월요일 싫어</button><button type="button">커피 마실래?</button>
+            <button type="button">시험 끝났다!</button><button type="button">치킨</button>
+          </div>
+          <p class="tr-out" id="tr-out">배가 고픕니다. 먹던 거 먹을 예정입니다.</p>
+          <p class="pbox-note mono" id="tr-hint">* 같은 말을 다시 번역하면 다르게 나옵니다.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="sitemap">
+    <div class="sm-cols">
+      <div>
+        <p class="mono">About</p>
+        <a href="index.html">Home</a><a href="tmi.html">TMI</a><a href="day.html">A Day</a><a href="quotes.html">Quotes</a>
+      </div>
+      <div>
+        <p class="mono">More</p>
+        <a href="manual.html">Manual</a><a href="someday.html">Someday</a><a href="faq.html">FAQ</a><a href="gallery.html">Gallery</a>
+      </div>
+      <div>
+        <p class="mono">Play</p>
+        <a href="play.html">Play</a><a href="https://docs.google.com/forms/d/e/1FAIpQLScuwm5VR3iKkkGPxskPZ88LTEF3181ZZtfGfy6gkGc3ohsI6Q/viewform" target="_blank" rel="noopener">Ask ↗</a><a href="log.html">업데이트 기록</a>
+      </div>
+    </div>
+    <div class="sm-bottom mono">
+      <span>김진서 미니홈피</span>
+      <span>v1.0 · Last updated 2026.10.07</span>
+    </div>
+  </footer>
+
+
+</div>
+<script src="script.js?v=21"></script>
+</body>
+</html>
