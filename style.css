@@ -795,3 +795,29 @@
   .mcards > :last-child:nth-child(odd) { grid-column: 1 / -1; }
   @media (max-width: 1000px) { .tcards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 820px) { .tcards, .mcards, .todos { grid-template-columns: minmax(0, 1fr); } }
+
+  /* 갤러리: 폴라로이드 벽 */
+  .wall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 28px; padding: 14px 6px 6px; }
+  .polaroid {
+    position: relative; margin: 0; background: #fff; padding: 12px 12px 0; border-radius: 3px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.08);
+    transform: rotate(-2deg); transition: transform .25s, box-shadow .25s;
+  }
+  .polaroid:nth-child(3n+2) { transform: rotate(1.6deg); }
+  .polaroid:nth-child(3n) { transform: rotate(-0.8deg); }
+  .polaroid:hover { transform: rotate(0) translateY(-6px) scale(1.02); box-shadow: 0 14px 30px rgba(0,0,0,.18); z-index: 2; }
+  .polaroid button { display: block; width: 100%; padding: 0; border: 0; background: #eee; cursor: zoom-in; aspect-ratio: 1; overflow: hidden; }
+  .polaroid img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; display: block; }
+  .polaroid figcaption {
+    font-family: "Nanum Pen Script", cursive; font-size: 26px; font-weight: 400; color: #333;
+    text-align: center; line-height: 1.2; padding: 12px 6px 16px; margin: 0;
+  }
+  .polaroid .stamp { position: absolute; right: 12px; bottom: 6px; font-size: 10px; color: #b0aaa0; }
+  .tape { position: absolute; top: -12px; left: 50%; width: 86px; height: 24px; transform: translateX(-50%) rotate(-3deg);
+    background: color-mix(in srgb, var(--hot) 35%, #fff); opacity: .75; }
+  .polaroid:nth-child(3n+2) .tape { background: #ffe38a; transform: translateX(-50%) rotate(4deg); }
+  .polaroid:nth-child(3n) .tape { background: #b9e4ff; }
+  .pol-blank { aspect-ratio: 1; display: grid; place-items: center; background: repeating-linear-gradient(45deg, #f4f1ec 0 12px, #ece8e1 12px 24px); }
+  .pol-blank span { font-size: 40px; opacity: .45; }
+  .empty-pol figcaption { color: #9a948a; }
+  @media (max-width: 820px) { .wall { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 18px; } .polaroid figcaption { font-size: 21px; } }
