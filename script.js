@@ -881,19 +881,19 @@
       const pet = BADGER_ART[fi].replace('<svg viewBox="0 0 200 200">', '<svg x="222" y="128" width="156" height="156" viewBox="0 0 200 200">');
       const deco = [
         // 아기: 택배 상자
-        `<g><path d="M486 240 H556 V284 H486Z" style="fill:var(--rp);${LN}"/><path d="M486 240 L494 230 H564 L556 240 M556 284 L564 274 V230" style="fill:var(--rp);${LN}"/>
+        `<g><path d="M486 240 H556 V284 H486Z" style="fill:var(--rkraft);${LN}"/><path d="M486 240 L494 230 H564 L556 240 M556 284 L564 274 V230" style="fill:var(--rkraft2);${LN}"/><rect x="500" y="250" width="42" height="26" style="fill:var(--rp)"/>
           <text x="521" y="259" text-anchor="middle" font-size="8" font-weight="800" style="fill:var(--rl)">아기 1</text>
           <text x="521" y="272" text-anchor="middle" font-size="7" font-weight="700" style="fill:var(--hot)">취급주의</text></g>`,
         // 벌꿀오소리: 꿀 병
-        `<g><rect x="508" y="244" width="30" height="40" rx="3" style="fill:var(--rp);${LN}"/><rect x="510" y="238" width="26" height="7" style="fill:var(--rp);${LN}"/>
-          <rect x="508" y="262" width="30" height="22" rx="3" style="fill:var(--hot)"/><rect x="508" y="244" width="30" height="40" rx="3" style="${LN};${NOF}"/>
+        `<g><rect x="508" y="244" width="30" height="40" rx="3" style="fill:var(--rp);${LN}"/><rect x="510" y="238" width="26" height="7" style="fill:var(--rwood);${LN}"/>
+          <rect x="508" y="258" width="30" height="26" rx="3" style="fill:var(--rhoney)"/><rect x="508" y="244" width="30" height="40" rx="3" style="${LN};${NOF}"/>
           <text x="523" y="257" text-anchor="middle" font-size="8" font-weight="800" style="fill:var(--rl)">꿀</text></g>`,
         // 사나운: 발톱 자국 + 주의 테이프
         `<g style="stroke:var(--rl);stroke-width:2;stroke-linecap:round"><path d="M472 28 l14 30 M481 26 l14 30 M490 24 l14 30"/></g>
          <g transform="rotate(-4 520 150)"><rect x="470" y="142" width="110" height="14" style="fill:var(--hot)"/>
           <text x="525" y="153" text-anchor="middle" font-size="8.5" font-weight="800" fill="#fff">출입 주의 · 물 수 있음</text></g>`,
         // 메가: 진화 증명서
-        `<g><rect x="468" y="20" width="62" height="48" style="fill:var(--rp);${LN}"/><rect x="472" y="24" width="54" height="40" style="${LN};${NOF};stroke-width:.8"/>
+        `<g><rect x="468" y="20" width="62" height="48" style="fill:var(--rwood);${LN}"/><rect x="472" y="24" width="54" height="40" style="fill:var(--rp)"/><rect x="472" y="24" width="54" height="40" style="${LN};${NOF};stroke-width:.8"/>
           <text x="499" y="38" text-anchor="middle" font-size="7" font-weight="800" style="fill:var(--rl)">진화 증명서</text>
           <path d="M484 46 H514 M488 52 H510" style="${LN};stroke-width:.8;opacity:.5"/><circle cx="516" cy="56" r="4" style="fill:var(--hot)"/></g>`,
       ][fi];
@@ -906,37 +906,37 @@
         <rect y="204" width="600" height="96" style="fill:var(--rf)"/>
         <g style="stroke:var(--rm);stroke-width:1"><path d="M0 236 H600 M0 268 H600 M140 204 V236 M360 204 V236 M80 236 V268 M300 236 V268 M500 236 V268 M200 268 V300 M420 268 V300"/></g>
         <path d="M0 204 H600" style="${LN}"/>
-        <rect x="40" y="44" width="116" height="92" style="fill:${night ? 'var(--rn)' : 'var(--rp)'};${LN}"/>
+        <rect x="40" y="44" width="116" height="92" style="fill:${night ? 'var(--rn)' : 'var(--rsky)'};${LN}"/>
         ${night ? '<circle cx="128" cy="68" r="9" style="fill:var(--rp)"/><circle cx="124" cy="65" r="8" style="fill:var(--rn)"/>'
-                : '<circle cx="128" cy="68" r="10" style="fill:var(--hot)"/>'}
+                : '<circle cx="128" cy="68" r="10" style="fill:var(--hot)"/><path d="M52 120 q2 -9 12 -8 q4 -8 14 -5 q8 -1 10 7 q7 1 7 6Z" style="fill:var(--rp);opacity:.9"/>'}
         <path d="M98 44 V136 M40 90 H156" style="${LN}"/>
-        <path d="M30 38 H166" style="${LN};stroke-width:2"/>
-        <path d="M34 38 V146 H58 V38 M162 38 V146 H138 V38" style="fill:var(--rp);${LN}"/>
+        <path d="M30 38 H166" style="stroke:var(--rwood2);stroke-width:4;stroke-linecap:round"/>
+        <path d="M34 38 V146 H58 V38 M162 38 V146 H138 V38" style="fill:var(--rcur);${LN}"/>
         <path d="M42 40 V144 M50 40 V144 M146 40 V144 M154 40 V144" style="${LN};stroke-width:.8;opacity:.35"/>
         <g transform="rotate(-2 236 86)"><rect x="200" y="46" width="72" height="86" style="fill:var(--hot)"/>
           <text x="236" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">대체로</text>
           <text x="236" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">괜찮음*</text>
           <text x="236" y="120" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" opacity=".8">* 개인차 있음</text></g>
-        <g transform="rotate(1.5 334 84)"><rect x="300" y="48" width="68" height="74" style="fill:var(--rp);${LN}"/>
+        <g transform="rotate(1.5 334 84)"><rect x="300" y="48" width="68" height="74" style="fill:var(--rnote);${LN}"/>
           <text x="307" y="64" font-size="8" font-weight="800" style="fill:var(--rm2)">TO DO</text>
           <g font-size="9" font-weight="700" style="fill:var(--rl)"><text x="307" y="80">☑ 커피</text><text x="307" y="93">☑ 알람 ×5</text><text x="307" y="106">☐ 테니스</text><text x="307" y="118" opacity=".45">☐ 놀고먹기</text></g></g>
-        <circle cx="${cx}" cy="${cy}" r="22" style="fill:var(--rp);${LN}"/>
+        <circle cx="${cx}" cy="${cy}" r="22" style="fill:var(--rp);stroke:var(--rwood2);stroke-width:4"/>
         <path d="M${cx} ${cy - 19} v3 M${cx} ${cy + 19} v-3 M${cx - 19} ${cy} h3 M${cx + 19} ${cy} h-3" style="${LN};stroke-width:1"/>
         <path d="M${cx} ${cy} L${hx} ${hy}" style="${LN};stroke-width:2.5"/>
         <path d="M${cx} ${cy} L${mx} ${my}" style="stroke:var(--hot);stroke-width:1.5;stroke-linecap:round"/>
         ${deco}
-        <g><path d="M20 266 V212 M186 266 V226" style="${LN}"/>
+        <g><path d="M18 212 H28 V266 H18Z M182 226 H190 V266 H182Z" style="fill:var(--rwood);${LN}"/>
           <rect x="20" y="226" width="166" height="30" style="fill:var(--rp);${LN}"/>
-          <rect x="70" y="222" width="116" height="34" style="fill:var(--rm);${LN}"/>
+          <rect x="70" y="222" width="116" height="34" style="fill:var(--rbed);${LN}"/><path d="M70 230 H186" style="stroke:var(--rp);stroke-width:1.5;opacity:.5"/>
           <rect x="28" y="214" width="38" height="12" style="fill:var(--rp);${LN}"/></g>
-        <path d="M184 288 L208 256 H392 L416 288Z" style="fill:var(--rr);${LN}"/>
-        <path d="M200 282 L218 260 H382 L400 282" style="stroke:var(--hot);stroke-width:${fi === 3 ? 2 : 1};fill:none"/>
-        <g><path d="M436 212 H580 M444 212 V280 M572 212 V280" style="${LN}"/>
-          <path d="M460 210 L466 186 H510 L506 210Z" style="fill:var(--rp);${LN}"/><path d="M454 211 H514" style="${LN}"/>
+        <path d="M184 288 L208 256 H392 L416 288Z" style="fill:var(--rr);stroke:var(--rrug);stroke-width:5;stroke-linejoin:round"/>
+        <path d="M200 282 L218 260 H382 L400 282" style="stroke:${fi === 3 ? 'var(--hot)' : 'var(--rrug)'};stroke-width:${fi === 3 ? 2 : 1};fill:none"/>
+        <g><path d="M442 214 V280 M574 214 V280" style="stroke:var(--rwood2);stroke-width:4"/><rect x="434" y="208" width="148" height="7" style="fill:var(--rwood);${LN}"/>
+          <path d="M460 210 L466 186 H510 L506 210Z" style="fill:var(--rmetal);${LN}"/><path d="M454 211 H514" style="${LN}"/>
           <path d="M534 190 H554 L552 210 H536Z" style="fill:var(--rp);${LN}"/>
           <path d="M554 194 q7 0 6 6 q-1 5 -7 5" style="${LN};${NOF}"/>
-          <path d="M566 200 H580 L578 210 H568Z" style="fill:var(--rp);${LN}"/>
-          <path d="M573 200 V182 M573 192 L566 186 M573 188 L580 183" style="${LN};${NOF}"/></g>
+          <path d="M573 200 q-9 -6 -7 -16 q8 3 7 16Z M573 200 q2 -14 10 -18 q2 10 -10 18Z" style="fill:var(--rplant);${LN};stroke-width:1"/>
+          <path d="M566 200 H580 L578 210 H568Z" style="fill:var(--rpot);${LN}"/></g>
         <a href="play.html#badger"><g class="rm-pet">${pet}</g></a>
         <g id="rm-bubble" class="rm-bubble">
           <rect x="352" y="116" width="150" height="26" style="fill:var(--rp);${LN}"/>
