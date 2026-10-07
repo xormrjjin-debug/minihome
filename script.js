@@ -30,19 +30,26 @@
     });
   }
 
-  // 사진첩 크게 보기
+  // 사진첩 크게 보기 (사진 · 영상)
   const lb = document.getElementById('lightbox');
   if (lb) {
-    const img = lb.querySelector('img'), cap = lb.querySelector('figcaption');
-    const close = () => { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); };
+    const img = lb.querySelector('img'), vid = lb.querySelector('video'), cap = lb.querySelector('figcaption');
+    const close = () => {
+      lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true');
+      if (vid) { vid.pause(); vid.removeAttribute('src'); vid.load(); }
+    };
     document.querySelectorAll('.shot button').forEach(b => b.addEventListener('click', () => {
-      img.src = b.dataset.src;
-      cap.textContent = b.parentElement.querySelector('figcaption')?.textContent || '';
+      const v = b.dataset.video;
+      img.hidden = !!v; if (vid) vid.hidden = !v;
+      if (v && vid) { vid.src = v; vid.play().catch(() => {}); } else { img.src = b.dataset.src; }
+      const fc = b.parentElement.querySelector('figcaption');
+      cap.textContent = fc ? (fc.lastChild.textContent || fc.textContent).trim() : '';
       lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false');
     }));
-    lb.addEventListener('click', e => { if (e.target !== img) close(); });
+    lb.addEventListener('click', e => { if (e.target !== img && e.target !== vid) close(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   }
+
 
   // 랜덤 TMI
   const tmiBtn = document.getElementById('tmi-btn');

@@ -19,7 +19,7 @@
 <meta property="og:url" content="https://xormrjjin-debug.github.io/minihome/gallery.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
-<link rel="stylesheet" href="style.css?v=26">
+<link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
 <div class="wrap">
@@ -45,19 +45,31 @@
   <section class="card chapters">
     <div class="panel">
       <h2 class="panel-title">사진은 <i>대체로 잘 나온 것만 올립니다.</i></h2>
-      <p class="page-intro mono">1장 · 누르면 크게 보입니다 · 사진은 계속 늘어날 예정입니다</p>
+      <p class="page-intro mono">사진 5장 · 영상 1개 · 누르면 크게 보입니다</p>
       <div class="gcards">
         <figure class="shot gcard">
-          <button type="button" data-src="images/profile.jpg"><img src="images/profile.jpg" alt="치즈버거를 먹는 김진서" loading="lazy"></button>
+          <button type="button" data-src="images/profile.jpg" aria-label="크게 보기"><img src="images/profile.jpg" alt="치즈버거를 먹는 김진서" loading="lazy"></button>
           <figcaption><span class="gmeta mono">01 · 2026.10</span>치즈가 생각보다 길었습니다.</figcaption>
         </figure>
-        <figure class="gcard gempty">
-          <div class="gblank mono">PHOTO 02</div>
-          <figcaption><span class="gmeta mono">02 · 준비 중</span>곧 올라옵니다</figcaption>
+        <figure class="shot gcard">
+          <button type="button" data-src="images/gallery/pinkmuhly.jpg" aria-label="크게 보기"><img src="images/gallery/pinkmuhly.jpg" alt="핑크뮬리 밭에서 사진을 찍는 김진서의 뒷모습" loading="lazy"></button>
+          <figcaption><span class="gmeta mono">02 · 핑크뮬리</span>사진 찍는 걸 찍혔습니다. 핑크뮬리는 대체로 예뻤습니다.</figcaption>
         </figure>
-        <figure class="gcard gempty">
-          <div class="gblank mono">PHOTO 03</div>
-          <figcaption><span class="gmeta mono">03 · 준비 중</span>아마도요</figcaption>
+        <figure class="shot gcard">
+          <button type="button" data-src="images/gallery/concert-poster.jpg" data-video="images/gallery/concert.mp4" aria-label="영상 재생"><img src="images/gallery/concert-poster.jpg" alt="밤 야외 공연 무대 영상" loading="lazy"><span class="gplay" aria-hidden="true">▶</span></button>
+          <figcaption><span class="gmeta mono">03 · 영상 · 13초</span>야외 공연. 사람이 많았습니다. 노래는 13초만 남았습니다.</figcaption>
+        </figure>
+        <figure class="shot gcard">
+          <button type="button" data-src="images/gallery/pizza.jpg" aria-label="크게 보기"><img src="images/gallery/pizza.jpg" alt="치즈가 늘어나는 피자와 맥주" loading="lazy"></button>
+          <figcaption><span class="gmeta mono">04 · 2026.09.29</span>치즈가 또 생각보다 길었습니다. 맥주는 주량에 넣지 않습니다.</figcaption>
+        </figure>
+        <figure class="shot gcard">
+          <button type="button" data-src="images/gallery/osulloc.jpg" aria-label="크게 보기"><img src="images/gallery/osulloc.jpg" alt="제주 오설록 앞에서 든 가족 네 컷 사진" loading="lazy"></button>
+          <figcaption><span class="gmeta mono">05 · 2026.09.25 · 제주</span>제주 오설록. 가족 네 컷은 대체로 잘 나왔습니다. 한 컷은 입만 나왔습니다.</figcaption>
+        </figure>
+        <figure class="shot gcard">
+          <button type="button" data-src="images/gallery/stars.jpg" aria-label="크게 보기"><img src="images/gallery/stars.jpg" alt="밤하늘에 비춘 별자리 앱 화면" loading="lazy"></button>
+          <figcaption><span class="gmeta mono">06 · 2026.09.05</span>별 대신 별자리 앱을 봤습니다. 물고기자리라고 합니다. 새벽 12시 28분이었습니다.</figcaption>
         </figure>
       </div>
     </div>
@@ -90,8 +102,8 @@
 </div>
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <button type="button" class="lb-close mono" aria-label="닫기">Close ✕</button>
-  <figure><img alt=""><figcaption></figcaption></figure>
+  <figure><img alt=""><video controls playsinline hidden></video><figcaption></figcaption></figure>
 </div>
-<script src="script.js?v=26"></script>
+<script src="script.js?v=27"></script>
 </body>
 </html>
