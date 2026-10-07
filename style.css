@@ -662,10 +662,8 @@
   .room-head a { color: var(--mute); text-decoration: none; }
   .room-head a:hover { color: var(--hot); }
   .room { border: 1px solid var(--rule); overflow: hidden; line-height: 0; margin-bottom: 8px; }
-  .room { --rw: #ebe9e4; --rf: #dedbd4; --rl: #0e0e0e; --rp: #faf9f6; --rm: #cbc8c1; --rg: #dcdad5; --rr: #faf9f6; }
-  @media (prefers-color-scheme: dark) {
-    .room { --rw: #151514; --rf: #1e1e1c; --rl: #efeee9; --rp: #242422; --rm: #3b3b38; --rg: #222220; --rr: #5a5852; }
-  }
+  .room { --rw: #f7f6f3; --rf: #edebe6; --rl: #2a2a28; --rp: #fdfcfa; --rm: #e2e0da; --rm2: #8c8b87; --rg: #ebe9e4; --rr: #fdfcfa; --rn: #3c3c4a; }
+  .room .rm-pet svg { filter: saturate(.35); }
   .room svg { width: 100%; height: auto; display: block; }
   .room .rm-pet { cursor: pointer; transition: transform .2s; transform-origin: 300px 260px; }
   .room .rm-pet:hover { transform: translateY(-4px); }
@@ -704,11 +702,10 @@
   @keyframes rm-heart { 0% { opacity: 0; transform: translateY(6px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px); } }
   .room .rm-pet { animation: rm-bob 2.6s ease-in-out infinite; }
   @keyframes rm-bob { 50% { transform: translateY(-3px); } }
-  .room .rm-pet:hover { animation: rm-hop .5s ease; }
   @keyframes rm-hop { 40% { transform: translateY(-14px); } }
   .room .rm-bubble { transform-origin: 365px 150px; }
-  .room .rm-bubble.pop { animation: rm-pop .35s cubic-bezier(.3,1.6,.5,1); }
-  @keyframes rm-pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .room .rm-bubble.pop { animation: rm-pop .3s ease; }
+  @keyframes rm-pop { from { opacity: 0; } to { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) { .room * { animation: none !important; } }
 
   /* ================= 읽기 편한 페이지 ================= */
