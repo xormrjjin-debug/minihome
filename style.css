@@ -662,6 +662,10 @@
   .room-head a { color: var(--mute); text-decoration: none; }
   .room-head a:hover { color: var(--hot); }
   .room { border: 1px solid var(--rule); overflow: hidden; line-height: 0; margin-bottom: 8px; }
+  .room { --rw: #ebe9e4; --rf: #dedbd4; --rl: #0e0e0e; --rp: #faf9f6; --rm: #cbc8c1; --rg: #dcdad5; --rr: #faf9f6; }
+  @media (prefers-color-scheme: dark) {
+    .room { --rw: #151514; --rf: #1e1e1c; --rl: #efeee9; --rp: #242422; --rm: #3b3b38; --rg: #222220; --rr: #5a5852; }
+  }
   .room svg { width: 100%; height: auto; display: block; }
   .room .rm-pet { cursor: pointer; transition: transform .2s; transform-origin: 300px 260px; }
   .room .rm-pet:hover { transform: translateY(-4px); }

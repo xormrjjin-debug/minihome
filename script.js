@@ -868,7 +868,15 @@
       ['건드리지 마십시오', '배고프면 사나워집니다', '크아앙', '밥 70번 받았습니다', '꿀 내놔'],
       ['짐이 메가 벌꿀오소리다', '대체로 전설입니다', '왕관이 무겁습니다', '200번의 밥, 기억하겠습니다', '커피도 바칩시다'],
     ];
-    const lights = ['#ff8fab', '#ffd166', '#8ecae6', '#b8e986', '#cdb4ff', '#ff8fab', '#ffd166', '#8ecae6', '#b8e986', '#cdb4ff', '#ff8fab'];
+    // 사이트 톤: 종이색 벽 + 검은 선 + 주황 포인트 (색은 style.css의 .room 변수, 다크 모드 자동)
+    const LN = 'stroke:var(--rl);stroke-width:2', NOF = 'fill:none';
+    const star = (x, y, r, fill) => {
+      const pts = Array.from({ length: 10 }, (_, i) => {
+        const a = (-90 + i * 36) * Math.PI / 180, d = i % 2 ? r * .45 : r;
+        return `${(x + d * Math.cos(a)).toFixed(1)},${(y + d * Math.sin(a)).toFixed(1)}`;
+      }).join(' ');
+      return `<polygon points="${pts}" style="fill:${fill};${LN};stroke-width:1.5;stroke-linejoin:round"/>`;
+    };
     let stage = 0, bubbleTimer;
     const draw = n => {
       const fi = HB(n); stage = fi;
@@ -880,82 +888,92 @@
       const pet = BADGER_ART[fi].replace('<svg viewBox="0 0 200 200">', '<svg x="222" y="128" width="156" height="156" viewBox="0 0 200 200">');
       const deco = [
         // 아기: 모빌 + 딸랑이
-        `<g class="rm-swing"><path d="M300 0 V22" stroke="#c9a67a" stroke-width="2"/><path d="M270 22 H330" stroke="#c9a67a" stroke-width="3" stroke-linecap="round"/>
-          <path d="M270 22 V34 M300 22 V40 M330 22 V34" stroke="#c9a67a" stroke-width="1.5"/>
-          <text x="270" y="46" font-size="14" text-anchor="middle">⭐</text><text x="300" y="52" font-size="14" text-anchor="middle">🌙</text><text x="330" y="46" font-size="14" text-anchor="middle">⭐</text></g>
-         <g><circle cx="520" cy="270" r="9" fill="#ffb3c1"/><rect x="517" y="246" width="6" height="18" rx="3" fill="#ffd166"/><circle cx="520" cy="244" r="8" fill="#ffd166"/></g>`,
+        `<g class="rm-swing"><path d="M300 0 V22 M270 22 H330 M270 22 V32 M300 22 V38 M330 22 V32" style="${LN};${NOF};stroke-width:1.5"/>
+          ${star(270, 40, 8, 'var(--hot)')}${star(330, 40, 8, 'var(--rp)')}
+          <path d="M306 40 a9 9 0 1 1 -9 -9 a6.5 6.5 0 1 0 9 9Z" style="fill:var(--rl)"/></g>
+         <g><rect x="517" y="248" width="6" height="20" style="fill:var(--rl)"/><circle cx="520" cy="244" r="9" style="fill:var(--rp);${LN}"/>
+          <circle cx="520" cy="272" r="8" style="fill:var(--hot);${LN}"/></g>`,
         // 벌꿀오소리: 꿀단지
-        `<g><path d="M500 282 Q500 252 522 252 Q544 252 544 282Z" fill="#e8a33c"/><rect x="503" y="246" width="38" height="9" rx="4" fill="#ffd166"/>
-          <path d="M508 255 q4 10 8 0 q4 12 8 0" fill="#ffd166"/><text x="522" y="275" text-anchor="middle" font-size="8" font-weight="800" fill="#fff4d0">HONEY</text></g>`,
+        `<g><path d="M500 284 Q498 254 522 254 Q546 254 544 284Z" style="fill:var(--hot);${LN}"/>
+          <rect x="503" y="246" width="38" height="9" style="fill:var(--rl)"/>
+          <text x="522" y="276" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">HONEY</text></g>`,
         // 사나운: 발톱 자국 + 주의 테이프
-        `<g stroke="#c07a6a" stroke-width="3" stroke-linecap="round"><path d="M470 26 l16 34 M480 24 l16 34 M490 22 l16 34"/></g>
-         <g transform="rotate(-6 520 150)"><rect x="470" y="140" width="110" height="16" fill="#ffd166"/><text x="525" y="152" text-anchor="middle" font-size="9" font-weight="800" fill="#24211f">⚠ 출입 주의 ⚠</text></g>`,
+        `<g style="stroke:var(--rl);stroke-width:3;stroke-linecap:round"><path d="M470 26 l16 34 M480 24 l16 34 M490 22 l16 34"/></g>
+         <g transform="rotate(-6 520 150)"><rect x="466" y="140" width="118" height="16" style="fill:var(--hot)"/>
+          <text x="525" y="152" text-anchor="middle" font-size="9" font-weight="800" fill="#0e0e0e">! 출입 주의 !</text></g>`,
         // 메가: 왕관 액자 + 트로피
-        `<g><rect x="470" y="22" width="56" height="44" rx="6" fill="#fff8e1" stroke="#e8b923" stroke-width="4"/>
-          <path d="M482 56 L486 34 L494 46 L498 30 L502 46 L510 34 L514 56Z" fill="#f5c542" stroke="#8a5a10" stroke-width="1.5"/></g>
-         <text x="520" y="282" font-size="26" text-anchor="middle">🏆</text>`,
+        `<g><rect x="470" y="22" width="56" height="44" style="fill:var(--rp);stroke:var(--hot);stroke-width:3"/>
+          <path d="M482 56 L486 34 L494 46 L498 30 L502 46 L510 34 L514 56Z" style="fill:var(--hot);${LN};stroke-width:1.5;stroke-linejoin:round"/></g>
+         <g><path d="M508 250 H532 Q532 272 520 272 Q508 272 508 250Z" style="fill:var(--hot);${LN}"/>
+          <path d="M508 254 q-8 0 -7 7 q1 5 8 5 M532 254 q8 0 7 7 q-1 5 -8 5" style="${LN};${NOF};stroke-width:1.5"/>
+          <rect x="517" y="272" width="6" height="6" style="fill:var(--rl)"/><rect x="509" y="278" width="22" height="5" style="fill:var(--rl)"/></g>`,
       ][fi];
-      const bulbs = lights.map((c, i) => {
+      const bulbs = Array.from({ length: 11 }, (_, i) => {
         const x = 18 + i * 56, y = 16 + 10 * Math.sin(i * 1.05) ** 2;
-        return `<g class="rm-bulb" style="animation-delay:${(i % 4) * .35}s"><circle cx="${x}" cy="${y + 8}" r="5.5" fill="${c}"/><rect x="${x - 2.5}" y="${y}" width="5" height="4" rx="1" fill="#8d7a66"/></g>`;
+        return `<g class="rm-bulb" style="animation-delay:${(i % 4) * .35}s"><rect x="${x - 2.5}" y="${y}" width="5" height="4" style="fill:var(--rl)"/>
+          <circle cx="${x}" cy="${y + 9}" r="5" style="fill:${i % 3 ? 'var(--rp)' : 'var(--hot)'};${LN};stroke-width:1.5"/></g>`;
       }).join('');
       room.innerHTML = `<svg viewBox="0 0 600 300" role="img" aria-label="미니룸: ${HB_NAMES[fi]}가 사는 방">
         <defs>
-          <pattern id="rm-dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.2" fill="#fff" opacity=".7"/><circle cx="20" cy="20" r="2.2" fill="#fff" opacity=".7"/></pattern>
-          <pattern id="rm-rug" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="${fi === 3 ? '#f5c542' : '#ffd166'}"/><rect width="8" height="16" fill="${fi === 3 ? '#e8b923' : '#ffc94d'}"/></pattern>
+          <pattern id="rm-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0 V24 M0 24 H24" style="stroke:var(--rg);stroke-width:1;fill:none"/></pattern>
+          <pattern id="rm-stripe" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" style="fill:var(--rm)"/><rect width="3" height="10" style="fill:var(--rl);opacity:.18"/></pattern>
         </defs>
-        <rect width="600" height="204" fill="${fi === 3 ? '#fff1d6' : '#ffe8e3'}"/>
-        <rect width="600" height="204" fill="url(#rm-dots)"/>
-        <rect y="196" width="600" height="10" fill="#fff" opacity=".8"/>
-        <rect y="204" width="600" height="96" fill="#f3d2a8"/>
-        <g stroke="#e8bf8c" stroke-width="2" opacity=".8"><path d="M0 236 H600 M0 268 H600 M140 204 V236 M360 204 V236 M80 236 V268 M300 236 V268 M500 236 V268 M200 268 V300 M420 268 V300"/></g>
-        <path d="M6 12 Q300 46 594 12" stroke="#8d7a66" stroke-width="1.5" fill="none"/>
+        <rect width="600" height="204" style="fill:var(--rw)"/>
+        <rect width="600" height="204" fill="url(#rm-grid)"/>
+        <rect y="204" width="600" height="96" style="fill:var(--rf)"/>
+        <g style="stroke:var(--rm);stroke-width:1.5"><path d="M0 236 H600 M0 268 H600 M140 204 V236 M360 204 V236 M80 236 V268 M300 236 V268 M500 236 V268 M200 268 V300 M420 268 V300"/></g>
+        <rect y="196" width="600" height="8" style="fill:var(--rp)"/>
+        <path d="M0 196 H600 M0 204 H600" style="${LN};stroke-width:1.5"/>
+        <path d="M6 12 Q300 46 594 12" style="${LN};${NOF};stroke-width:1.2"/>
         ${bulbs}
-        <rect x="40" y="44" width="116" height="92" rx="14" fill="${night ? '#2b3266' : '#bfe6ff'}" stroke="#fff" stroke-width="7"/>
-        ${night ? '<circle cx="128" cy="68" r="11" fill="#fff6c8"/><circle cx="124" cy="64" r="11" fill="#2b3266"/><text x="62" y="78" font-size="10">✨</text><text x="92" y="118" font-size="9">✨</text>'
-                : '<circle cx="128" cy="66" r="12" fill="#ffd54a"/><g fill="#fff"><ellipse cx="72" cy="106" rx="20" ry="8"/><ellipse cx="86" cy="100" rx="12" ry="8"/></g>'}
-        <path d="M98 44 V136 M40 90 H156" stroke="#fff" stroke-width="5"/>
-        <path d="M30 40 Q44 90 36 144 L62 144 Q56 92 70 40Z" fill="#ffb3c1"/><path d="M166 40 Q152 90 160 144 L134 144 Q140 92 126 40Z" fill="#ffb3c1"/>
-        <rect x="26" y="34" width="144" height="8" rx="4" fill="#e88aa0"/>
-        <g transform="rotate(-4 236 86)"><rect x="200" y="44" width="72" height="86" rx="6" fill="#ff6b4a"/>
+        <rect x="40" y="44" width="116" height="92" style="fill:${night ? '#1a1a19' : 'var(--rp)'};${LN}"/>
+        ${night ? '<circle cx="128" cy="68" r="11" fill="#efeee9"/><circle cx="123" cy="64" r="10" fill="#1a1a19"/><g fill="#efeee9"><circle cx="64" cy="72" r="1.6"/><circle cx="82" cy="58" r="1.2"/><circle cx="70" cy="116" r="1.4"/><circle cx="138" cy="114" r="1.2"/></g>'
+                : `<circle cx="128" cy="66" r="12" style="fill:var(--hot)"/><path d="M54 112 q0 -10 12 -10 q4 -10 16 -6 q10 -2 12 8 q8 0 8 8Z" style="fill:var(--rw);${LN};stroke-width:1.5"/>`}
+        <path d="M98 44 V136 M40 90 H156" style="${LN};stroke-width:4"/>
+        <rect x="40" y="44" width="116" height="92" style="${LN};${NOF};stroke-width:3"/>
+        <path d="M30 40 Q44 90 36 144 L62 144 Q56 92 70 40Z" style="fill:var(--rp);${LN};stroke-linejoin:round"/><path d="M166 40 Q152 90 160 144 L134 144 Q140 92 126 40Z" style="fill:var(--rp);${LN};stroke-linejoin:round"/>
+        <path d="M44 50 Q52 96 46 140 M152 50 Q144 96 150 140" style="${LN};${NOF};stroke-width:1;opacity:.45"/>
+        <rect x="24" y="34" width="148" height="6" style="fill:var(--rl)"/>
+        <g transform="rotate(-4 236 86)"><rect x="200" y="44" width="72" height="86" style="fill:var(--hot)"/>
           <text x="236" y="80" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">대체로</text>
           <text x="236" y="98" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">괜찮음*</text>
-          <text x="236" y="118" text-anchor="middle" font-size="8" fill="#ffe0d6">* 개인차 있음</text>
-          <circle cx="236" cy="48" r="4" fill="#ffd166"/></g>
-        <g transform="rotate(3 334 84)"><rect x="300" y="46" width="68" height="76" rx="3" fill="#fff59d"/>
-          <text x="334" y="62" text-anchor="middle" font-size="9" font-weight="800" fill="#8a6d00">TO DO ✔</text>
-          <g font-size="9" fill="#5a4a00"><text x="307" y="78">☑ 커피</text><text x="307" y="92">☑ 알람 ×5</text><text x="307" y="106">☐ 테니스</text><text x="307" y="118" opacity=".55">☐ 놀고먹기</text></g>
-          <circle cx="334" cy="49" r="3.5" fill="#ff6b4a"/></g>
-        <circle cx="${cx}" cy="${cy}" r="24" fill="#fff" stroke="#ffb3c1" stroke-width="5"/>
-        <circle cx="${cx - 8}" cy="${cy - 5}" r="1.6" fill="#24211f"/><circle cx="${cx + 8}" cy="${cy - 5}" r="1.6" fill="#24211f"/>
-        <ellipse cx="${cx - 12}" cy="${cy + 6}" rx="3.5" ry="2" fill="#ffb3c1"/><ellipse cx="${cx + 12}" cy="${cy + 6}" rx="3.5" ry="2" fill="#ffb3c1"/>
-        <path d="M${cx} ${cy} L${hx} ${hy}" stroke="#24211f" stroke-width="3.5" stroke-linecap="round"/>
-        <path d="M${cx} ${cy} L${mx} ${my}" stroke="#ff4a1c" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="${cx}" cy="${cy}" r="2.5" fill="#24211f"/>
+          <text x="236" y="118" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" opacity=".8">* 개인차 있음</text>
+          <circle cx="236" cy="50" r="3.5" style="fill:var(--rl)"/></g>
+        <g transform="rotate(3 334 84)"><rect x="300" y="46" width="68" height="76" style="fill:var(--rp);${LN};stroke-width:1.5"/>
+          <text x="334" y="64" text-anchor="middle" font-size="9" font-weight="800" style="fill:var(--hot)">TO DO</text>
+          <g font-size="9" font-weight="700" style="fill:var(--rl)"><text x="307" y="80">☑ 커피</text><text x="307" y="93">☑ 알람 ×5</text><text x="307" y="106">☐ 테니스</text><text x="307" y="118" opacity=".5">☐ 놀고먹기</text></g>
+          <circle cx="334" cy="49" r="3.5" style="fill:var(--hot)"/></g>
+        <circle cx="${cx}" cy="${cy}" r="24" style="fill:var(--rp);${LN};stroke-width:2.5"/>
+        <path d="M${cx} ${cy - 20} v4 M${cx} ${cy + 20} v-4 M${cx - 20} ${cy} h4 M${cx + 20} ${cy} h-4" style="${LN};stroke-width:1.5"/>
+        <path d="M${cx} ${cy} L${hx} ${hy}" style="${LN};stroke-width:3.5;stroke-linecap:round"/>
+        <path d="M${cx} ${cy} L${mx} ${my}" style="stroke:var(--hot);stroke-width:2;stroke-linecap:round"/>
+        <circle cx="${cx}" cy="${cy}" r="2.5" style="fill:var(--rl)"/>
         ${deco}
-        <g><rect x="18" y="214" width="170" height="54" rx="14" fill="#b98b6a"/>
-          <rect x="22" y="200" width="162" height="44" rx="16" fill="#fff"/>
-          <rect x="22" y="218" width="162" height="40" rx="14" fill="${night ? '#9fa8ff' : '#a8e6cf'}"/>
-          <g fill="#fff" opacity=".8"><text x="60" y="244" font-size="12">♥</text><text x="104" y="250" font-size="12">♥</text><text x="148" y="242" font-size="12">♥</text></g>
-          <ellipse cx="56" cy="206" rx="26" ry="11" fill="#ffe0e8"/><text x="56" y="211" text-anchor="middle" font-size="11" fill="#ff8fab">♥</text></g>
-        <ellipse cx="300" cy="272" rx="${fi === 3 ? 128 : 112}" ry="22" fill="url(#rm-rug)" stroke="#fff" stroke-width="4"/>
-        <g><rect x="434" y="208" width="146" height="10" rx="5" fill="#c49470"/>
-          <rect x="444" y="218" width="8" height="60" rx="3" fill="#c49470"/><rect x="562" y="218" width="8" height="60" rx="3" fill="#c49470"/>
-          <path d="M454 208 L462 184 L512 184 L506 208Z" fill="#cdb4ff"/><rect x="452" y="205" width="62" height="5" rx="2" fill="#b39ddb"/>
-          <circle cx="484" cy="196" r="3" fill="#fff"/>
-          <path d="M534 186 L556 186 L553 208 L537 208Z" fill="#fff" stroke="#ff8fab" stroke-width="2.5"/>
-          <path d="M556 191 q8 0 7 7 q-1 6 -8 6" fill="none" stroke="#ff8fab" stroke-width="2.5"/>
-          <g class="rm-steam"><path d="M540 178 q-3 -5 0 -10" stroke="#c9b8b0" stroke-width="2" fill="none"/><text x="547" y="172" font-size="9" fill="#ff8fab">♥</text></g>
-          <path d="M572 208 q-4 -16 8 -22 q-2 12 -8 22Z" fill="#7bc47f"/><rect x="566" y="200" width="14" height="10" rx="2" fill="#e88a60"/></g>
+        <g><rect x="18" y="214" width="170" height="54" style="fill:var(--rl)"/>
+          <rect x="22" y="202" width="162" height="42" style="fill:var(--rp);${LN};stroke-width:1.5"/>
+          <rect x="22" y="220" width="162" height="40" style="fill:url(#rm-stripe);${LN};stroke-width:1.5"/>
+          <path d="M22 228 H184" style="${LN};stroke-width:1.5"/>
+          <rect x="32" y="198" width="50" height="16" rx="8" style="fill:var(--rp);${LN};stroke-width:1.5"/></g>
+        <ellipse cx="300" cy="272" rx="${fi === 3 ? 128 : 112}" ry="22" style="fill:var(--rr);${LN}"/>
+        <ellipse cx="300" cy="272" rx="${fi === 3 ? 114 : 98}" ry="15" style="${NOF};stroke:var(--hot);stroke-width:${fi === 3 ? 3 : 1.5};stroke-dasharray:${fi === 3 ? 'none' : '5 5'}"/>
+        <g><rect x="434" y="208" width="146" height="7" style="fill:var(--rl)"/>
+          <rect x="444" y="215" width="5" height="64" style="fill:var(--rl)"/><rect x="565" y="215" width="5" height="64" style="fill:var(--rl)"/>
+          <path d="M454 208 L462 184 L512 184 L506 208Z" style="fill:var(--rm);${LN};stroke-width:1.5;stroke-linejoin:round"/>
+          <circle cx="485" cy="196" r="3" style="fill:var(--hot)"/>
+          <path d="M534 186 L556 186 L553 208 L537 208Z" style="fill:var(--rp);${LN};stroke-width:1.5;stroke-linejoin:round"/>
+          <path d="M556 191 q8 0 7 7 q-1 6 -8 6" style="${LN};${NOF};stroke-width:1.5"/>
+          <g class="rm-steam"><path d="M541 178 q-3 -5 0 -10 M549 178 q-3 -5 0 -10" style="${LN};${NOF};stroke-width:1.2;opacity:.6"/></g>
+          <path d="M573 196 q-6 -14 4 -22 q2 12 -4 22Z M573 196 q4 -12 12 -12 q-2 10 -12 12Z" style="fill:var(--rl)"/>
+          <path d="M565 196 H583 L580 208 H568Z" style="fill:var(--hot)"/></g>
         <a href="play.html#badger"><g class="rm-pet">${pet}</g></a>
-        <g class="rm-hearts"><text x="372" y="190" font-size="13" fill="#ff8fab">♥</text><text x="226" y="200" font-size="10" fill="#ff8fab" style="animation-delay:1.2s">♥</text></g>
+        <g class="rm-hearts"><text x="372" y="190" font-size="13" style="fill:var(--hot)">♥</text><text x="226" y="200" font-size="10" style="fill:var(--hot);animation-delay:1.2s">♥</text></g>
         <g id="rm-bubble" class="rm-bubble">
-          <rect x="352" y="114" width="150" height="30" rx="15" fill="#fff" stroke="#24211f" stroke-width="2"/>
-          <path d="M366 142 L360 154 L378 143Z" fill="#fff" stroke="#24211f" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M365 141 L377 141" stroke="#fff" stroke-width="3"/>
-          <text id="rm-say" x="427" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#24211f"></text>
+          <rect x="352" y="114" width="150" height="30" rx="15" style="fill:var(--rp);${LN}"/>
+          <path d="M366 142 L360 154 L378 143Z" style="fill:var(--rp);${LN};stroke-linejoin:round"/>
+          <path d="M365 141 L377 141" style="stroke:var(--rp);stroke-width:3"/>
+          <text id="rm-say" x="427" y="134" text-anchor="middle" font-size="12" font-weight="700" style="fill:var(--rl)"></text>
         </g>
-        ${night ? '<rect width="600" height="300" fill="#141a4a" opacity=".3" pointer-events="none"/><text x="368" y="176" font-size="20" font-weight="800" fill="#cdb4ff">z Z</text>' : ''}
+        ${night ? '<rect width="600" height="300" fill="#000" opacity=".22" pointer-events="none"/><text x="368" y="176" font-size="20" font-weight="800" style="fill:var(--hot)">z Z</text>' : ''}
       </svg>`;
       document.getElementById('room-cap').textContent =
         `현재 거주자: ${HB_NAMES[fi]} · 밥 ${n.toLocaleString()}번${night ? ' · 지금은 자는 시간입니다' : ''}`;
